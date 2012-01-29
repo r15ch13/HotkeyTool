@@ -6,7 +6,9 @@ HotkeyTool
 Usage
 ----------
 Implement the interface IHotkeyFunction and start coding your own Hotkeyfunction.
+
 Hotkeyfunctions must always exist in the namespace HotkeyTool.HotKeyFunctions.
+
 Use the method Execute() to launch your actions.
 
 ```C#
@@ -29,6 +31,7 @@ Human-O2 Iconset by Oliver Scholtz
 License
 ----------
 Copyright 2012 Richard 'r15ch13' Kuhnt
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

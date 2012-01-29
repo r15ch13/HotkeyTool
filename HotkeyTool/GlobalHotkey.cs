@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2012 Richard Kuhnt
+ * Copyright 2012 Richard 'r15ch13' Kuhnt
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
