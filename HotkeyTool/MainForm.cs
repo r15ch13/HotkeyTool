@@ -227,6 +227,12 @@ namespace HotkeyTool
         /// <param name="e"></param>
         private void MainForm_Load(object sender, EventArgs e)
         {
+            // Hide on startup
+            BeginInvoke(new MethodInvoker(delegate
+            {
+                this.Hide();
+            }));
+
             foreach (var item in hotkeys)
             {
                 if (item != null)
