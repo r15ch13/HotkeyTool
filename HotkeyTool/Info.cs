@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace HotkeyTool
 {
@@ -26,7 +27,7 @@ namespace HotkeyTool
         public Info()
         {
             InitializeComponent();
-            label2.Text = String.Format("Developed by Richard 'r15ch13' Kuhnt\nVersion: {0}\nFileversion: {1}", Assembly.GetExecutingAssembly().GetAssemblyVersion(), Assembly.GetExecutingAssembly().GetFileVersion());
+            label2.Text = String.Format(CultureInfo.CurrentCulture, "Developed by Richard 'r15ch13' Kuhnt\nVersion: {0}\nFileversion: {1}", Assembly.GetExecutingAssembly().GetAssemblyVersion(), Assembly.GetExecutingAssembly().GetFileVersion());
             label3.Text = "Iconsets used:\nfamfamfam.com Silk Iconset by Mark James\nHuman-O2 Iconset by Oliver Scholtz";
         }   
     }

@@ -24,15 +24,19 @@ namespace HotkeyTool.HotKeyFunctions
     /// </summary>
     public class MinimizeWindow : IHotkeyFunction
     {
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+        internal static class NativeMethods
+        {
+            [DllImport("user32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
-        /// <summary>
-        /// Returns the handle of the current foregroundwindow
-        /// </summary>
-        /// <returns></returns>
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
+            /// <summary>
+            /// Returns the handle of the current foregroundwindow
+            /// </summary>
+            /// <returns></returns>
+            [DllImport("user32.dll")]
+            internal static extern IntPtr GetForegroundWindow();
+        }
 
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMINIMIZED = 2;
@@ -43,13 +47,13 @@ namespace HotkeyTool.HotKeyFunctions
         /// </summary>
         public void Execute()
         {
-            IntPtr hWnd = GetForegroundWindow();
+            IntPtr hWnd = NativeMethods.GetForegroundWindow();
             if (!hWnd.Equals(IntPtr.Zero))
             {
                 // SW_SHOWMAXIMIZED to maximize the window
                 // SW_SHOWMINIMIZED to minimize the window
                 // SW_SHOWNORMAL to make the window be normal size
-                ShowWindowAsync(hWnd, SW_SHOWMINIMIZED);
+                NativeMethods.ShowWindowAsync(hWnd, SW_SHOWMINIMIZED);
             }
         }
 

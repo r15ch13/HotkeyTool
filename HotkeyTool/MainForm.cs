@@ -19,6 +19,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Globalization;
+
+[assembly: CLSCompliant(true)]
 
 namespace HotkeyTool
 {
@@ -41,7 +44,7 @@ namespace HotkeyTool
 
             this.comboBoxHotkeyFunctions.DataSource = null;
             this.comboBoxHotkeyFunctions.DisplayMember = "Name";
-            this.comboBoxHotkeyFunctions.DataSource = GlobalHotkey.GetHotkeyFunctions();
+            this.comboBoxHotkeyFunctions.DataSource = GlobalHotkey.HotkeyFunctions;
         }
 
         /// <summary>
@@ -95,7 +98,7 @@ namespace HotkeyTool
         protected override void WndProc(ref Message m)
         {
             // only if hotkey is pressed
-            if (m.Msg == GlobalHotkey.Constants.WM_HOTKEY_MSG_ID)
+            if (m.Msg == Constants.WM_HOTKEY_MSG_ID)
             {
                 // get keyvalue
                 Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
@@ -114,11 +117,11 @@ namespace HotkeyTool
                             {
                                 // executes hotkeyfunction
                                 item.HotkeyFunction.Execute();
-                                Debug.WriteLine(String.Format("Executed Hotkey: {0}", item.Debug()));
+                                Debug.WriteLine(String.Format(CultureInfo.CurrentCulture, "Executed Hotkey: {0}", item.Debug()));
                             }
                             else
                             {
-                                Debug.WriteLine(String.Format("No HotkeyFunctions assigned to Hotkey: {0}", item.Debug()));
+                                Debug.WriteLine(String.Format(CultureInfo.CurrentCulture, "No HotkeyFunctions assigned to Hotkey: {0}", item.Debug()));
                             }
                         }
                     }
@@ -164,10 +167,10 @@ namespace HotkeyTool
                     GlobalHotkey ghk = new GlobalHotkey((Keys)textBoxKey.Tag, this.Handle,
                         GlobalHotkey.GetHotkeyFunctionInstanceByName(comboBoxHotkeyFunctions.SelectedItem.GetType().Name))
                     {
-                        CTRL = checkBoxCtrl.Checked,
-                        SHIFT = checkBoxShift.Checked,
-                        ALT = checkBoxAlt.Checked,
-                        WIN = checkBoxWin.Checked,
+                        Ctrl = checkBoxCtrl.Checked,
+                        Shift = checkBoxShift.Checked,
+                        Alt = checkBoxAlt.Checked,
+                        Win = checkBoxWin.Checked,
                     };
 
                     if (!CheckIfHotkeyExists(ghk))

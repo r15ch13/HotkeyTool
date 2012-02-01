@@ -21,6 +21,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace HotkeyTool
 {
@@ -35,22 +37,22 @@ namespace HotkeyTool
         /// <summary>
         /// CTRL modifier
         /// </summary>
-        public bool CTRL { get; set; }
+        public bool Ctrl { get; set; }
 
         /// <summary>
         /// SHIFT modifier
         /// </summary>
-        public bool SHIFT { get; set; }
+        public bool Shift { get; set; }
 
         /// <summary>
         /// ALT modifier
         /// </summary>
-        public bool ALT { get; set; }
+        public bool Alt { get; set; }
 
         /// <summary>
         /// WIN
         /// </summary>
-        public bool WIN { get; set; }
+        public bool Win { get; set; }
 
         /// <summary>
         /// The key
@@ -70,7 +72,13 @@ namespace HotkeyTool
         /// <summary>
         /// Hashcode
         /// </summary>
-        private int Id { get; set; }
+        private int Id
+        {
+            get
+            {
+                return Modifier ^ (int)Key ^ Handle.ToInt32();
+            }
+        }
 
         /// <summary>
         /// Combines all modifiers and returns the value
@@ -79,7 +87,7 @@ namespace HotkeyTool
         {
             get
             {
-                return (CTRL ? Constants.CTRL : 0x0000) + (SHIFT ? Constants.SHIFT : 0x0000) + (ALT ? Constants.ALT : 0x0000) + (WIN ? Constants.WIN : 0x0000);
+                return (Ctrl ? Constants.Ctrl : 0x0000) + (Shift ? Constants.Shift : 0x0000) + (Alt ? Constants.Alt : 0x0000) + (Win ? Constants.Win : 0x0000);
             }
         }
         #endregion
@@ -94,46 +102,34 @@ namespace HotkeyTool
             this.Key = key;
             this.Handle = handle;
             this.HotkeyFunction = hotkeyfunction;
-            this.Id = this.GetHashCode();
-        }
-
-        /// <summary>
-        /// Contains modifier constants
-        /// </summary>
-        public class Constants
-        {
-            //modifiers
-            public const int NOMOD = 0x0000;
-            public const int ALT = 0x0001;
-            public const int CTRL = 0x0002;
-            public const int SHIFT = 0x0004;
-            public const int WIN = 0x0008;
-
-            //windows message id for hotkey
-            public const int WM_HOTKEY_MSG_ID = 0x0312;
         }
 
         #region DllImports
 
-        /// <summary>
-        /// Registers the Hotkey
-        /// </summary>
-        /// <param name="hWnd"></param>
-        /// <param name="id"></param>
-        /// <param name="fsModifiers"></param>
-        /// <param name="vk"></param>
-        /// <returns></returns>
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+        internal static class NativeMethods
+        {
+            /// <summary>
+            /// Registers the Hotkey
+            /// </summary>
+            /// <param name="hWnd"></param>
+            /// <param name="id"></param>
+            /// <param name="fsModifiers"></param>
+            /// <param name="vk"></param>
+            /// <returns></returns>
+            [DllImport("user32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
 
-        /// <summary>
-        /// Unregisters the Hotkey
-        /// </summary>
-        /// <param name="hWnd"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+            /// <summary>
+            /// Unregisters the Hotkey
+            /// </summary>
+            /// <param name="hWnd"></param>
+            /// <param name="id"></param>
+            /// <returns></returns>
+            [DllImport("user32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        }
         #endregion
 
         #region methods
@@ -154,15 +150,14 @@ namespace HotkeyTool
         public bool Register()
         {
             this.Unregister();
-            this.Id = this.GetHashCode();
-            if (RegisterHotKey(Handle, Id, Modifier, (int)Key))
+            if (NativeMethods.RegisterHotKey(this.Handle, this.Id, this.Modifier, (int)Key))
             {
-                System.Diagnostics.Debug.WriteLine(String.Format("Hotkey registered: {0}", Debug()));
+                System.Diagnostics.Debug.WriteLine(String.Format(CultureInfo.CurrentCulture, "Hotkey registered: {0}", Debug()));
                 return true;
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine(String.Format("Hotkey failed to register: {0}", Debug()));
+                System.Diagnostics.Debug.WriteLine(String.Format(CultureInfo.CurrentCulture, "Hotkey failed to register: {0}", Debug()));
                 return false;
             }
         }
@@ -173,14 +168,14 @@ namespace HotkeyTool
         /// <returns></returns>
         public bool Unregister()
         {
-            if (UnregisterHotKey(Handle, Id))
+            if (NativeMethods.UnregisterHotKey(Handle, Id))
             {
-                System.Diagnostics.Debug.WriteLine(String.Format("Hotkey unregisted: {0}", Debug()));
+                System.Diagnostics.Debug.WriteLine(String.Format(CultureInfo.CurrentCulture, "Hotkey unregisted: {0}", Debug()));
                 return true;
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine(String.Format("Hotkey failed to unregister: {0}", Debug()));
+                System.Diagnostics.Debug.WriteLine(String.Format(CultureInfo.CurrentCulture, "Hotkey failed to unregister: {0}", Debug()));
                 return false;
             }
         }
@@ -191,7 +186,7 @@ namespace HotkeyTool
         /// <returns></returns>
         public override string ToString()
         {
-            return String.Format("{0}{1}{2}{3}{4} => {5}", (CTRL ? "CTRL + " : ""), (SHIFT ? "SHIFT + " : ""), (ALT ? "ALT + " : ""), (WIN ? "WIN + " : ""), Key, HotkeyFunctionName);
+            return String.Format(CultureInfo.CurrentCulture, "{0}{1}{2}{3}{4} => {5}", (Ctrl ? "CTRL + " : ""), (Shift ? "SHIFT + " : ""), (Alt ? "ALT + " : ""), (Win ? "WIN + " : ""), Key, HotkeyFunctionName);
         }
 
         /// <summary>
@@ -200,7 +195,7 @@ namespace HotkeyTool
         /// <returns></returns>
         public string Debug()
         {
-            return String.Format("CTRL:{0} | SHIFT:{1} | ALT:{2} | WIN:{3} | Key:{4} | Handle:{5}", CTRL, SHIFT, ALT, WIN, Key, Handle);
+            return String.Format(CultureInfo.CurrentCulture, "CTRL:{0} | SHIFT:{1} | ALT:{2} | WIN:{3} | Key:{4} | Handle:{5}", Ctrl, Shift, Alt, Win, Key, Handle);
         }
 
         /// <summary>
@@ -221,7 +216,7 @@ namespace HotkeyTool
         /// <returns>e.g. "False:True:True:False:A:MinimizeWindow"</returns>
         public string Serialize()
         {
-            return String.Format("{0}:{1}:{2}:{3}:{4}:{5}", CTRL, SHIFT, ALT, WIN, Key, HotkeyFunctionName);
+            return String.Format(CultureInfo.CurrentCulture, "{0}:{1}:{2}:{3}:{4}:{5}", Ctrl, Shift, Alt, Win, Key, HotkeyFunctionName);
         }
 
         /// <summary>
@@ -238,10 +233,10 @@ namespace HotkeyTool
                 Keys key = (Keys)Enum.Parse(typeof(Keys), str[4]);
 
                 GlobalHotkey hk = new GlobalHotkey(key, handle, GetHotkeyFunctionInstanceByName(str[5]));
-                hk.CTRL = str[0] == "True" ? true : false;
-                hk.SHIFT = str[1] == "True" ? true : false;
-                hk.ALT = str[2] == "True" ? true : false;
-                hk.WIN = str[3] == "True" ? true : false;
+                hk.Ctrl = str[0] == "True" ? true : false;
+                hk.Shift = str[1] == "True" ? true : false;
+                hk.Alt = str[2] == "True" ? true : false;
+                hk.Win = str[3] == "True" ? true : false;
                 return hk;
             }
             return null;
@@ -263,14 +258,25 @@ namespace HotkeyTool
         /// Returns all HotkeyFunctions
         /// </summary>
         /// <returns></returns>
-        public static List<IHotkeyFunction> GetHotkeyFunctions()
+        public static ReadOnlyCollection<IHotkeyFunction> HotkeyFunctions
         {
-            List<IHotkeyFunction> hkf = new List<IHotkeyFunction>();
-            foreach (var item in GlobalHotkey.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "HotkeyTool.HotKeyFunctions"))
+            get
             {
-                hkf.Add(GetHotkeyFunctionInstanceByName(item.Name));
+                ReadOnlyCollection<IHotkeyFunction> hkf = null;
+
+                List<IHotkeyFunction> tmp = new List<IHotkeyFunction>();
+                IHotkeyFunction hk = null;
+                foreach (var item in GlobalHotkey.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "HotkeyTool.HotKeyFunctions"))
+                {
+                    hk = GetHotkeyFunctionInstanceByName(item.Name);
+                    if (hk != null)
+                    {
+                        tmp.Add(hk);
+                    }
+                }
+                hkf = new ReadOnlyCollection<IHotkeyFunction>(tmp);
+                return hkf;
             }
-            return hkf;
         }
 
         /// <summary>
