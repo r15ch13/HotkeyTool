@@ -211,7 +211,7 @@ namespace HotkeyTool
                         {
                             if (item.Modifier == ghk.Modifier && item.Key == ghk.Key)
                             {
-                                MessageBox.Show("Hotkey already exists!", "Adding Hotkey", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("Hotkey already exists!", "Adding Hotkey", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0);
                                 return true;
                             }
                         }

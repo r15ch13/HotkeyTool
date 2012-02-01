@@ -21,7 +21,7 @@
   <IgnoreGeneratedCode>False</IgnoreGeneratedCode>
  </ProjectOptions>
  <Targets>
-  <Target Name="$(ProjectDir)/bin/Debug/HotkeyTool.exe" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/HotkeyTool/bin/Debug/HotkeyTool.exe" Analyze="True" AnalyzeAllChildren="True" />
  </Targets>
  <Rules>
   <RuleFiles>
@@ -41,7 +41,7 @@
  </Rules>
  <FxCopReport Version="10.0">
   <Targets>
-   <Target Name="$(ProjectDir)/bin/Debug/HotkeyTool.exe">
+   <Target Name="$(ProjectDir)/HotkeyTool/bin/Debug/HotkeyTool.exe">
     <Modules>
      <Module Name="hotkeytool.exe">
       <Namespaces>
@@ -75,19 +75,6 @@
              <Message TypeName="IdentifiersShouldNotContainUnderscores" Category="Microsoft.Naming" CheckId="CA1707" Status="Excluded" Created="2012-02-01 22:23:56Z">
               <Issue Name="Member">
                <Item>'Constants.WM_HOTKEY_MSG_ID'</Item>
-              </Issue>
-             </Message>
-            </Messages>
-           </Member>
-          </Members>
-         </Type>
-         <Type Name="MainForm">
-          <Members>
-           <Member Name="#CheckIfHotkeyExists(HotkeyTool.GlobalHotkey)">
-            <Messages>
-             <Message TypeName="SpecifyMessageBoxOptions" Category="Microsoft.Globalization" CheckId="CA1300" Status="Excluded" Created="2012-02-01 22:11:36Z">
-              <Issue>
-               <Item>'MainForm.CheckIfHotkeyExists(GlobalHotkey)'</Item>
               </Issue>
              </Message>
             </Messages>
