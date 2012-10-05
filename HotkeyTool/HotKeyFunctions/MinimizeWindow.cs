@@ -62,10 +62,7 @@ namespace HotkeyTool.HotKeyFunctions
         /// </summary>
         public string Name
         {
-            get
-            {
-                return "Minimize Window";
-            }
+            get { return "Minimize Window"; }
         }
     }
 }

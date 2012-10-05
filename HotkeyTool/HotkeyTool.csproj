@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="HotKeyFunctions\MakeWindowTopMost.cs" />
+    <Compile Include="HotKeyFunctions\MakeWindowNotTopMost.cs" />
     <Compile Include="HotKeyFunctions\TestFunction.cs" />
     <Compile Include="Info.cs">
       <SubType>Form</SubType>
