@@ -205,7 +205,7 @@ namespace HotkeyTool
         {
             get
             {
-                return (HotkeyFunction != null ? HotkeyFunction.GetType().Name : "");
+                return (HotkeyFunction != null ? HotkeyFunction.Name : "");
             }
         }
         #endregion
