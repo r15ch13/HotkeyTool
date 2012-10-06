@@ -70,6 +70,11 @@ namespace HotkeyTool
         public IHotkeyFunction HotkeyFunction { get; set; }
 
         /// <summary>
+        /// Hotkey function name
+        /// </summary>
+        private string hotkeyFunctionName;
+
+        /// <summary>
         /// Hashcode
         /// </summary>
         private int Id
@@ -199,13 +204,29 @@ namespace HotkeyTool
         }
 
         /// <summary>
+        /// Returns the HotkeyFunctionType
+        /// </summary>
+        public string HotkeyFunctionType
+        {
+            get
+            {
+                return (HotkeyFunction != null ? HotkeyFunction.GetType().Name : "");
+            }
+        }
+
+        
+        /// <summary>
         /// Returns the HotkeyFunction Name
         /// </summary>
         public string HotkeyFunctionName
         {
             get
             {
-                return (HotkeyFunction != null ? HotkeyFunction.Name : "");
+                return (HotkeyFunction != null ? HotkeyFunction.Name : this.hotkeyFunctionName);
+            }
+            set 
+            {
+                this.hotkeyFunctionName = value;
             }
         }
         #endregion
@@ -216,7 +237,7 @@ namespace HotkeyTool
         /// <returns>e.g. "False:True:True:False:A:MinimizeWindow"</returns>
         public string Serialize()
         {
-            return String.Format(CultureInfo.CurrentCulture, "{0}:{1}:{2}:{3}:{4}:{5}", Ctrl, Shift, Alt, Win, Key, HotkeyFunctionName);
+            return String.Format(CultureInfo.CurrentCulture, "{0}:{1}:{2}:{3}:{4}:{5}:{6}", Ctrl, Shift, Alt, Win, Key, HotkeyFunctionType, HotkeyFunctionName);
         }
 
         /// <summary>
@@ -228,7 +249,7 @@ namespace HotkeyTool
         public static GlobalHotkey Deserialize(string serialized, IntPtr handle)
         {
             string[] str = serialized.Split(':');
-            if (str.Length == 6)
+            if (str.Length == 7)
             {
                 Keys key = (Keys)Enum.Parse(typeof(Keys), str[4]);
 
@@ -237,6 +258,7 @@ namespace HotkeyTool
                 hk.Shift = str[1] == "True" ? true : false;
                 hk.Alt = str[2] == "True" ? true : false;
                 hk.Win = str[3] == "True" ? true : false;
+                hk.HotkeyFunctionName = str[6];
                 return hk;
             }
             return null;
